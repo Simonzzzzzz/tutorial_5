@@ -96,7 +96,7 @@ void readTelList(const string& filename, telRec*& telList, int& n)
 		while (line[j] != ',')
 			j++;
 		telList[i].name = line.substr(0, j);
-		telList[i].tel = line.substr(j+2, 8);
+		telList[i].tel = line.substr(j+2, j+10);
 	}
 	infile.close();
 }
@@ -249,6 +249,22 @@ void printChatGroupByName(const chatGroup *groupList, int g, const string& gname
 
 const string& getTelByName(telRec **ptrList, int n, const string& user)
 {
+	int start=0;
+	int end=n-1;
+	while(start<=end){
+		int mid=(end+start)/2;
+		if(ptrList[mid]->name==user){
+			return ptrList[mid]->tel;
+		}
+		if(ptrList[mid]->name>user){
+			end=mid-1;
+		}
+		else{
+			start=mid+1;
+			}
+		}
+	
+	
 	// your codes
 	// implement this function using binary search
 	
@@ -279,7 +295,51 @@ void printFriend(const chatGroup *groupList, int g, const telRec *telList,
 		cout << "User " << user << " is " << NotFound << endl << endl;
 		return;
 	}
+	else{
+		int size=0;
+		string *friendList;
+		friendList = new string[n];
+		for(int i=0;i<g;i++){
+			int start=0;
+			int end=groupList[i].size-1;
+			while(start<=end){
+				int mid=(start+end)/2;
+				if(groupList[i].member[mid]==tel){
+					for(int j=0;j<groupList[i].size;j++){
+						if(j==mid){
+							continue;
+						}
+						friendList[j+size]=groupList[i].member[j];
+					}
+					size=size+groupList[i].size-1;
+					break;
+				}
+				else if(groupList[i].member[mid]>tel){
+					end=mid-1;
+				}
+				else
+					start=mid+1;
+			}
+		}
+		if(size==0){
+			cout<<user<<" : 0 friend is found"<<endl;
+		}
+		else{
+		qsort(friendList, size, sizeof(string), compareString);
+		cout<<user<<" : "<<size<<" friends are found"<<endl;
+		cout<<getNameByTel(telList, n, friendList[0])<<" , "<<friendList[0]<<endl;
+		for(int i=1;i<=size;i++){
+			if(friendList[i]==friendList[i-1]){
+				continue;
+			}
+			else
+				cout << getNameByTel(telList,n,friendList[i])<<" , "<<friendList[i]<<endl;
+		}
+		}
+			
 
+	
+	}
 	// your codes
 
 }
@@ -290,6 +350,23 @@ void tut_05(telRec *telList, int n, chatGroup *groupList, int g)
 	for (int i = 0; i < n; i++)
 		nameIndex[i] = &telList[i];
 
+	string name;
+	string tel;
+	for(int i=1;i<n;i++){
+		for (int j=i;j>0;j--){
+			if(telList[j].name<telList[j-1].name){
+				name=telList[j].name;
+				tel=telList[j].tel;
+				telList[j].name=telList[j-1].name;
+				telList[j].tel=telList[j-1].tel;
+				telList[j-1].name=name;
+				telList[j-1].tel=tel;
+			}
+			else{
+				break;
+			}
+		}
+	}
 
 	// +++++  your codes to sort the array nameIndex[]
 	
