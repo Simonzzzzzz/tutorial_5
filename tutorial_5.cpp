@@ -167,8 +167,8 @@ const string& getNameByTel(const telRec *telList, int n, const string& tel)
 
 	// Use binary search to find the telRec
 
-	/*
-	int low = 0;
+	
+	/*int low = 0;
 	int high = n-1;
 	while (low <= high)
 	{
@@ -181,9 +181,15 @@ const string& getNameByTel(const telRec *telList, int n, const string& tel)
 		else
 			high = mid - 1;
 	}
+	return NotFound;*/
+	for (int i = 0; i < n; i++) {
+		if (telList[i].tel == tel) {
+			return telList[i].name;
+		}
+	}
 	return NotFound;
-	*/
-
+	
+	
 	// implementation using the function bsearch() of the C standard library
 	telRec t;
 	t.tel = tel;
@@ -326,16 +332,14 @@ void printFriend(const chatGroup *groupList, int g, const telRec *telList,
 		}
 		else{
 		qsort(friendList, size, sizeof(string), compareString);
-		cout<<user<<" : "<<size<<" friends are found"<<endl;
-		cout<<getNameByTel(telList, n, friendList[0])<<" , "<<friendList[0]<<endl;
-		for(int i=1;i<=size;i++){
-			if(friendList[i]==friendList[i-1]){
-				continue;
-			}
-			else
-				cout << getNameByTel(telList,n,friendList[i])<<" , "<<friendList[i]<<endl;
+		cout << user << " : " << size << " friends are found" << endl;
+		string file1 = "tel-name.txt";
+		for (int i = 1; i <= size; i++) {
+			string t = friendList[i];
+			cout << getNameByTel(telList, n, t) << ", " << t << endl;
 		}
 		}
+		
 			
 
 	
